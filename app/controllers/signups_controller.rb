@@ -3,7 +3,7 @@ rescue_from ActiveRecord::RecordInvalid, with: :invalid_response
 
     def create
         signup = Signup.create!(signup_params)
-        render json: signup, status: :created
+        render json: signup.activity, status: :created
     end
 
     private
@@ -11,7 +11,7 @@ rescue_from ActiveRecord::RecordInvalid, with: :invalid_response
         params.permit(:camper_id, :activity_id, :time)
     end
 
-    def invalid_response
-        render json: { "errors": ["validation errors"] }, status: 422
+    def invalid_response(invalid)
+        render json: { errors: invalid.record.errors.full_messages }, status: :unprocessable_entity
     end
 end
